@@ -1,0 +1,29 @@
+{
+  "env": {
+    "es6": true,
+      "browser": true
+  },
+    "extends": "eslint:recommended",
+    "parser": "babel-eslint",
+    "plugins": ["import"],
+    "globals": {
+      "_": false,
+      "remote": false,
+      "process": false,
+      "module": false,
+      "require": false,
+      "__dirname": false,
+      "preloadedData": false
+    },
+    "root": true,
+    "rules": {
+      "no-console": "off",
+      "indent": ["error", 2],
+      "eqeqeq": 1,
+      "quotes": ["error", "single"],
+      "linebreak-style": ["error", "unix"],
+      "semi": ["error", "always"],
+      "arrow-body-style": ["error", "as-needed"],
+      "import/extensions": 1,
+    }
+}
