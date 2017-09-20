@@ -1,13 +1,14 @@
 /* eslint no-unused-vars: off */
 import { forceGraph } from './index.scss';
 import Loading from './Loading/Loading';
+import './flags/flags.css';
 
 const d3 = require('d3');
 
 const url = 'https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json';
-const svgWidth = window.innerWidth;
-const svgHeight = window.innerHeight - 5;
-const linkDistance = 40;
+const svgWidth = d3.min([window.innerWidth, 1200]);
+const svgHeight = d3.min([window.innerHeight - 5, 800]);
+const linkDistance = 60;
 
 
 
@@ -42,9 +43,7 @@ const buildForceGraph = graph => {
     )
     .force(
       'charge',
-      d3.forceManyBody()
-        .strength(-10)
-        .distanceMax(200)
+      d3.forceManyBody().distanceMax(200)
     )
     .force(
       'collide',
@@ -57,15 +56,16 @@ const buildForceGraph = graph => {
     .data(graph.links)
     .enter().append('line')
     .attr('stroke', '#666')
-    .attr('stroke-width', 2);
+    .attr('stroke-width', 1);
 
-  const node = svg.append('g')
+  const node = d3.select('body').append('g')
     .attr('class', 'nodes')
     .selectAll()
     .data(graph.nodes)
-    .enter().append('circle')
-    .attr('r', 10)
-    .attr('fill', 'orange')
+    .enter()
+    .append('div')
+    .attr('class', d => `flag flag-${d.code}`)
+    .style('position', 'absolute')
     .call(
       d3.drag()
         .on('start', d => {
@@ -84,14 +84,6 @@ const buildForceGraph = graph => {
         })
     );
 
-  const desc = svg.append('g')
-    .selectAll()
-    .data(graph.nodes)
-    .enter().append('text')
-    .text(d => d.code)
-    .attr('text-anchor', 'middle')
-    .attr('transform', 'translate(0, 4)');
-
   simulation
     .nodes(graph.nodes)
     .on('tick', () => {
@@ -102,12 +94,9 @@ const buildForceGraph = graph => {
         .attr('y2', d => d.target.y);
 
       node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
-
-      desc
-        .attr('x', d => d.x)
-        .attr('y', d => d.y);
+        .style('top', d => `${d.y}px`)
+        .style('left', d => `${d.x}px`)
+        .style('transform', 'translate(-50%, -50%)');
     });
 
   simulation.force('link')
