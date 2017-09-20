@@ -6,8 +6,8 @@ import './flags/flags.css';
 const d3 = require('d3');
 
 const url = 'https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json';
-const svgWidth = d3.min([window.innerWidth, 1200]);
-const svgHeight = d3.min([window.innerHeight - 5, 800]);
+const getWidth  = () => d3.min([window.innerWidth, 1200]);
+const getHeight = () => d3.min([window.innerHeight - 5, 800]);
 const linkDistance = 60;
 
 
@@ -24,8 +24,8 @@ const buildForceGraph = graph => {
   );
 
   svg
-    .attr('width', svgWidth)
-    .attr('height', svgHeight)
+    .attr('width', getWidth())
+    .attr('height', getHeight())
     .classed(forceGraph, true);
 
   app.appendChild(svg.node());
@@ -39,7 +39,7 @@ const buildForceGraph = graph => {
     )
     .force(
       'center',
-      d3.forceCenter(svgWidth / 2, svgHeight / 2)
+      d3.forceCenter(svg.attr('width') / 2, svg.attr('height') / 2)
     )
     .force(
       'charge',
@@ -50,6 +50,8 @@ const buildForceGraph = graph => {
       d3.forceCollide(20)
     );
 
+  window.simulation = simulation;
+
   const link = svg.append('g')
     .attr('class', 'links')
     .selectAll()
@@ -58,7 +60,7 @@ const buildForceGraph = graph => {
     .attr('stroke', '#666')
     .attr('stroke-width', 1);
 
-  const node = d3.select('body').append('g')
+  const node = d3.select('#app').append('g')
     .attr('class', 'nodes')
     .selectAll()
     .data(graph.nodes)
@@ -101,6 +103,15 @@ const buildForceGraph = graph => {
 
   simulation.force('link')
     .links(graph.links);
+
+  window.addEventListener('resize', () => {
+    svg.attr('width', getWidth()).attr('height', getHeight());
+    simulation.force(
+      'center',
+      d3.forceCenter(svg.attr('width') / 2, svg.attr('height') / 2)
+    );
+    simulation.restart();
+  });
 
   loading.removeFromNode(app);
 };
