@@ -1,7 +1,6 @@
 /* eslint no-unused-vars: off */
 import { forceGraph, link as linkClass } from './index.scss';
 import Loading from './Loading/Loading';
-import './flags/flags.css';
 
 const d3 = require('d3');
 
@@ -9,6 +8,8 @@ const url = 'https://raw.githubusercontent.com/DealPete/forceDirected/master/cou
 const getWidth  = () => d3.min([window.innerWidth, 1200]);
 const getHeight = () => d3.min([window.innerHeight - 5, 800]);
 const linkDistance = 60;
+const flagWidth = 32;
+const flagHeight = 24;
 
 
 
@@ -18,7 +19,21 @@ loading.appendToNode(app).startAnimation();
 
 
 
-const buildForceGraph = graph => {
+const buildForceGraph = ({ nodes, links }) => {
+  // Fix Yugoslavia -> Macedonia
+  const findCountryIndex = name => nodes.findIndex(({ country }) => country === name);
+
+  const skip = findCountryIndex('Yugoslavia');
+  const redirect = findCountryIndex('Macedonia');
+  nodes = nodes.filter((_, i) => i !== skip);
+  links = links.map(({ target, source }) => {
+    if (target === skip) target = redirect;
+    if (source === skip) source = redirect;
+    if (target > skip) target--;
+    if (source > skip) source--;
+    return { target, source };
+  });
+
   const svg = d3.select(
     document.createElementNS('http://www.w3.org/2000/svg', 'svg')
   );
@@ -50,25 +65,22 @@ const buildForceGraph = graph => {
       d3.forceCollide(20)
     );
 
-  window.simulation = simulation;
-
   const link = svg.append('g')
     .attr('class', 'links')
     .selectAll()
-    .data(graph.links)
+    .data(links)
     .enter().append('line')
     .classed(linkClass, true);
-    // .attr('stroke', '#666')
-    // .attr('stroke-width', 1);
 
-  const node = d3.select('#app').append('div')
+  const node = svg.append('g')
     .attr('class', 'nodes')
     .selectAll()
-    .data(graph.nodes)
-    .enter()
-    .append('div')
-    .attr('class', d => `flag flag-${d.code}`)
-    .style('position', 'absolute')
+    .data(nodes)
+    .enter().append('image')
+    .attr('id', d => `flag-${d.code}`)
+    .attr('width', flagWidth)
+    .attr('height', flagHeight)
+    .attr('transform', `translate(-${flagWidth / 2}, -${flagHeight / 2})`)
     .call(
       d3.drag()
         .on('start', d => {
@@ -87,8 +99,15 @@ const buildForceGraph = graph => {
         })
     );
 
+  nodes.forEach(({ code }) => {
+    import(`flag-icon-css/flags/4x3/${code}.svg`).then(flagImg => {
+      console.log(flagImg);
+      d3.select(`#flag-${code}`).attr('xlink:href', flagImg);
+    });
+  });
+
   simulation
-    .nodes(graph.nodes)
+    .nodes(nodes)
     .on('tick', () => {
       link
         .attr('x1', d => d.source.x)
@@ -96,19 +115,13 @@ const buildForceGraph = graph => {
         .attr('x2', d => d.target.x)
         .attr('y2', d => d.target.y);
 
-      const { top, left } = document.getElementsByClassName(forceGraph)[0].getBoundingClientRect();
-
       node
-        .style('top', d => `${d.y}px`)
-        .style('left', d => `${d.x}px`)
-        .style(
-          'transform',
-          `translate(calc(${left}px - 50%), calc(${top}px - 50%))`
-        );
+        .attr('x', d => d.x)
+        .attr('y', d => d.y);
     });
 
   simulation.force('link')
-    .links(graph.links);
+    .links(links);
 
   window.addEventListener('resize', () => {
     svg.attr('width', getWidth()).attr('height', getHeight());
