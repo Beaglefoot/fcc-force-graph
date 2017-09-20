@@ -48,7 +48,7 @@ module.exports = {
         })
       },
       {
-        test: /\.png/i,
+        test: /\.(jpe?g|png)$/i,
         use: [
           'file-loader',
           {
@@ -60,6 +60,10 @@ module.exports = {
               pngquant: {
                 quality: '65-90',
                 speed: 4
+              },
+              mozjpeg: {
+                progressive: true,
+                quality: 80
               }
             }
           }
@@ -71,7 +75,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json'],
     alias: {
-      src: path.resolve(__dirname, 'src')
+      src: path.resolve(__dirname, 'src'),
+      assets: path.resolve(__dirname, 'assets')
     }
   },
 

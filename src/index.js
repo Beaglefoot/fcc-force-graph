@@ -1,5 +1,5 @@
 /* eslint no-unused-vars: off */
-import { forceGraph } from './index.scss';
+import { forceGraph, link as linkClass } from './index.scss';
 import Loading from './Loading/Loading';
 import './flags/flags.css';
 
@@ -57,10 +57,11 @@ const buildForceGraph = graph => {
     .selectAll()
     .data(graph.links)
     .enter().append('line')
-    .attr('stroke', '#666')
-    .attr('stroke-width', 1);
+    .classed(linkClass, true);
+    // .attr('stroke', '#666')
+    // .attr('stroke-width', 1);
 
-  const node = d3.select('#app').append('g')
+  const node = d3.select('#app').append('div')
     .attr('class', 'nodes')
     .selectAll()
     .data(graph.nodes)
@@ -95,10 +96,15 @@ const buildForceGraph = graph => {
         .attr('x2', d => d.target.x)
         .attr('y2', d => d.target.y);
 
+      const { top, left } = document.getElementsByClassName(forceGraph)[0].getBoundingClientRect();
+
       node
         .style('top', d => `${d.y}px`)
         .style('left', d => `${d.x}px`)
-        .style('transform', 'translate(-50%, -50%)');
+        .style(
+          'transform',
+          `translate(calc(${left}px - 50%), calc(${top}px - 50%))`
+        );
     });
 
   simulation.force('link')
