@@ -157,7 +157,7 @@ const buildForceGraph = ({ nodes, links }) => {
     .style('font-size', titleFontSize)
     .classed(title, true)
     .attr('x', svg.attr('width') / 2)
-    .attr('y', titleFontSize * 1.2)
+    .attr('y', titleFontSize * 1.5)
     .style('filter', 'url(#shadow)');
 
 

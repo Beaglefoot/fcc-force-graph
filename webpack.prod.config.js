@@ -14,7 +14,7 @@ module.exports = Object.assign({}, devModuleConfig, {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: 'dist/',
+    publicPath: '/dist/',
     filename: 'bundle.js'
   },
 
