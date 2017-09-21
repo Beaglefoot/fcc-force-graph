@@ -1,7 +1,10 @@
+import { loading } from './Loading.scss';
+
 class Loading {
   constructor() {
     this.loading = document.createElement('div');
     this.loading.appendChild(document.createTextNode('Loading'));
+    this.loading.classList.add(loading);
   }
 
   appendToNode(node) {

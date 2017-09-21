@@ -1,5 +1,8 @@
 $clr_svg_bg: #13181f;
 $clr_link: #888;
+$clr_title_fill: #fff;
+$clr_title_stroke: #000;
+$clr_font_default: #fff;
 
 .force-graph {
   margin-top: 7vh;
@@ -14,8 +17,10 @@ $clr_link: #888;
 
 .title {
   text-anchor: middle;
-  fill: #fff;
-  stroke: #000;
+  fill: $clr_title_fill;
+  stroke: $clr_title_stroke;
+  cursor: default;
+  font-family: 'Roboto';
 }
 
 :global {
@@ -27,6 +32,7 @@ $clr_link: #888;
     margin: 0;
     display: flex;
     flex-direction: column;
+    background: black;
     background-image: url('~assets/images/globe.jpeg');
     background-size: cover;
     background-repeat: no-repeat;
@@ -35,5 +41,6 @@ $clr_link: #888;
   #app {
     text-align: center;
     flex-grow: 1;
+    color: $clr_font_default;
   }
 }

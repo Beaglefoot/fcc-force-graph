@@ -1,6 +1,7 @@
 /* eslint no-unused-vars: off */
 import { forceGraph, link as linkClass, title } from './index.scss';
 import Loading from './Loading/Loading';
+import Footer from './Footer/Footer';
 
 const d3 = require('d3');
 
@@ -17,6 +18,7 @@ const titleFontSize = 30;
 const app = document.getElementById('app');
 const loading = new Loading();
 loading.appendToNode(app).startAnimation();
+new Footer().appendToDocument();
 
 
 
@@ -108,6 +110,10 @@ const buildForceGraph = ({ nodes, links }) => {
       d3.select(`#flag-${code}`).attr('xlink:href', flagImg)
     ));
   });
+
+  // Pop-up
+  node.append('title')
+    .text(d => d.country);
 
   simulation
     .nodes(nodes)
