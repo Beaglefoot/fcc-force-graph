@@ -45,6 +45,8 @@ const buildForceGraph = ({ nodes, links }) => {
 
   app.appendChild(svg.node());
 
+
+
   const simulation = d3.forceSimulation()
     .force(
       'link',
@@ -80,6 +82,7 @@ const buildForceGraph = ({ nodes, links }) => {
     .attr('id', d => `flag-${d.code}`)
     .attr('width', flagWidth)
     .attr('height', flagHeight)
+    .attr('xlink:href', 'blank')
     .attr('transform', `translate(-${flagWidth / 2}, -${flagHeight / 2})`)
     .call(
       d3.drag()
@@ -122,6 +125,12 @@ const buildForceGraph = ({ nodes, links }) => {
 
   simulation.force('link')
     .links(links);
+
+
+  svg.call(d3.zoom()
+    .scaleExtent([0.5, 4])
+    .on('zoom', () => d3.selectAll('g').attr('transform', d3.event.transform)));
+
 
   window.addEventListener('resize', () => {
     svg.attr('width', getWidth()).attr('height', getHeight());
