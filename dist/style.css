@@ -23,9 +23,10 @@ body {
   display: flex;
   flex-direction: column;
   background: black;
-  background-image: url(/dist/e55107e38afb251ed1140fcd417bc150.jpeg);
+  background-image: url(/fcc-force-graph/dist/e55107e38afb251ed1140fcd417bc150.jpeg);
   background-size: cover;
-  background-repeat: no-repeat; }
+  background-repeat: no-repeat;
+  font-family: 'Roboto'; }
 
 #app {
   text-align: center;

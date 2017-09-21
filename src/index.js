@@ -71,14 +71,12 @@ const buildForceGraph = ({ nodes, links }) => {
     );
 
   const link = svg.append('g')
-    .attr('class', 'links')
     .selectAll()
     .data(links)
     .enter().append('line')
     .classed(linkClass, true);
 
   const node = svg.append('g')
-    .attr('class', 'nodes')
     .selectAll()
     .data(nodes)
     .enter().append('image')
@@ -111,7 +109,7 @@ const buildForceGraph = ({ nodes, links }) => {
     ));
   });
 
-  // Pop-up
+  // Tooltip
   node.append('title')
     .text(d => d.country);
 
@@ -154,7 +152,7 @@ const buildForceGraph = ({ nodes, links }) => {
   svg
     .append('text')
     .text('National Contiguity with a Force Directed Graph')
-    .style('font-size', titleFontSize)
+    .attr('font-size', titleFontSize)
     .classed(title, true)
     .attr('x', svg.attr('width') / 2)
     .attr('y', titleFontSize * 1.5)
