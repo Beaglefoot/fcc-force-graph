@@ -2,7 +2,7 @@ $clr_svg_bg: #13181f;
 $clr_link: #888;
 
 .force-graph {
-  margin-top: 5vh;
+  margin-top: 7vh;
   background: $clr_svg_bg;
   opacity: 0.95;
   box-shadow: 0 0 20px rgba(#000, 0.85);
@@ -10,6 +10,12 @@ $clr_link: #888;
 
 .link {
   stroke: $clr_link;
+}
+
+.title {
+  text-anchor: middle;
+  fill: #fff;
+  stroke: #000;
 }
 
 :global {

@@ -1,5 +1,5 @@
 /* eslint no-unused-vars: off */
-import { forceGraph, link as linkClass } from './index.scss';
+import { forceGraph, link as linkClass, title } from './index.scss';
 import Loading from './Loading/Loading';
 
 const d3 = require('d3');
@@ -10,6 +10,7 @@ const getHeight = () => d3.min([window.innerHeight - 5, 800]);
 const linkDistance = 60;
 const flagWidth = 32;
 const flagHeight = 24;
+const titleFontSize = 30;
 
 
 
@@ -103,10 +104,9 @@ const buildForceGraph = ({ nodes, links }) => {
     );
 
   nodes.forEach(({ code }) => {
-    import(`flag-icon-css/flags/4x3/${code}.svg`).then(flagImg => {
-      console.log(flagImg);
-      d3.select(`#flag-${code}`).attr('xlink:href', flagImg);
-    });
+    import(`flag-icon-css/flags/4x3/${code}.svg`).then(flagImg => (
+      d3.select(`#flag-${code}`).attr('xlink:href', flagImg)
+    ));
   });
 
   simulation
@@ -132,6 +132,29 @@ const buildForceGraph = ({ nodes, links }) => {
     .on('zoom', () => d3.selectAll('g').attr('transform', d3.event.transform)));
 
 
+
+  // Title
+  svg.append('defs')
+    .append('filter')
+    .attr('id', 'shadow')
+    .attr('width', '150%')
+    .attr('height', '150%')
+    .html(
+      '<feOffset result="offOut" in="SourceAlpha" dx="2" dy="2" />' +
+      '<feGaussianBlur result="blurOut" in="offOut" stdDeviation="2" />' +
+      '<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />'
+    );
+
+  svg
+    .append('text')
+    .text('National Contiguity with a Force Directed Graph')
+    .style('font-size', titleFontSize)
+    .classed(title, true)
+    .attr('x', svg.attr('width') / 2)
+    .attr('y', titleFontSize * 1.2)
+    .style('filter', 'url(#shadow)');
+
+
   window.addEventListener('resize', () => {
     svg.attr('width', getWidth()).attr('height', getHeight());
     simulation.force(
@@ -139,7 +162,10 @@ const buildForceGraph = ({ nodes, links }) => {
       d3.forceCenter(svg.attr('width') / 2, svg.attr('height') / 2)
     );
     simulation.restart();
+
+    d3.select(`.${title}`).attr('x', svg.attr('width') / 2);
   });
+
 
   loading.removeFromNode(app);
 };
